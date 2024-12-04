@@ -7,22 +7,14 @@ private sealed interface Command {
 }
 
 fun main() {
-
-    fun findMatches(input: String): List<Command> {
-        val regex = Regex(pattern = "(mul\\([0-9]{1,3},[0-9]{1,3}\\)|do\\(\\)|don't\\(\\))")
-        val rawCommands = regex.findAll(input).map { it.value}.toList()
-        return rawCommands.mapNotNull {
+    fun findMatches(input: String): Sequence<Command> {
+        val regex = Regex(pattern = "(mul\\(([0-9]{1,3}),([0-9]{1,3})\\)|(do)\\(\\)|(don't)\\(\\))")
+        return regex.findAll(input).mapNotNull { match ->
+            val (fullCommand, mula, mulb, isDo, isDont) = match.destructured
             when {
-                it.startsWith("mul") -> {
-                    val mulCommand = it.removePrefix("mul(").removeSuffix(")").split(",")
-                    Command.Mul(mulCommand[0].toInt(), mulCommand[1].toInt())
-                }
-                it.startsWith("don't") -> {
-                    Command.Dont
-                }
-                it.startsWith("do") -> {
-                    Command.Do
-                }
+                isDo.isNotEmpty() -> Command.Do
+                isDont.isNotEmpty() -> Command.Dont
+                fullCommand.startsWith("mul") -> Command.Mul(mula.toInt(), mulb.toInt())
                 else -> null
             }
         }
