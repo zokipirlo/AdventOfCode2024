@@ -32,24 +32,22 @@ fun main() {
     var isDo = true
     fun calculate2(line: String): Int {
         val commands = findMatches(line)
-//        println("Commands: $commands")
-        val muls = commands.filter { command ->
+        return commands.sumOf { command ->
             when (command) {
                 Command.Do -> {
                     isDo = true
-                    false
+                    0
                 }
                 Command.Dont -> {
                     isDo =  false
-                    false
+                    0
                 }
-                is Command.Mul -> {
-                    isDo
+                is Command.Mul -> when {
+                    isDo -> command.result
+                    else -> 0
                 }
             }
         }
-//        println("Muls: $muls")
-        return muls.sumOf { (it as Command.Mul).result }
     }
 
     fun part2(input: List<String>): Int {
