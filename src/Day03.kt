@@ -21,19 +21,15 @@ fun main() {
         }
     }
 
-    fun calculate(line: String): Int {
-        return findMatches(line)
+    fun part1(input: String): Int {
+        return findMatches(input)
             .filterIsInstance<Command.Mul>()
             .sumOf { it.result() }
     }
 
-    fun part1(input: List<String>): Int {
-        return input.sumOf(::calculate)
-    }
-
-    var isDo = true
-    fun calculate2(line: String): Int {
-        val commands = findMatches(line)
+    fun part2(input: String): Int {
+        val commands = findMatches(input)
+        var isDo = true
         return commands.sumOf { command ->
             when (command) {
                 Command.Do -> {
@@ -50,14 +46,10 @@ fun main() {
         }
     }
 
-    fun part2(input: List<String>): Int {
-        return input.sumOf(::calculate2)
-    }
+    check(part1("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))") == 161)
+    check(part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))") == 48)
 
-    check(part1(listOf("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))")) == 161)
-    check(part2(listOf("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")) == 48)
-
-    val input = readInput("Day03")
+    val input = readInputAsString("Day03")
     part1(input).println()
     part2(input).println()
 }
