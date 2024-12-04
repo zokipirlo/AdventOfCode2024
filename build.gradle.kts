@@ -8,6 +8,12 @@ sourceSets {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xwhen-guards")
+    }
+}
+
 tasks {
     wrapper {
         gradleVersion = "8.11.1"

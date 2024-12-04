@@ -22,7 +22,9 @@ fun main() {
     }
 
     fun calculate(line: String): Int {
-        return findMatches(line).filterIsInstance<Command.Mul>().sumOf { it.result() }
+        return findMatches(line)
+            .filterIsInstance<Command.Mul>()
+            .sumOf { it.result() }
     }
 
     fun part1(input: List<String>): Int {
@@ -42,10 +44,8 @@ fun main() {
                     isDo =  false
                     0
                 }
-                is Command.Mul -> when {
-                    isDo -> command.result()
-                    else -> 0
-                }
+                is Command.Mul if isDo -> command.result()
+                is Command.Mul -> 0
             }
         }
     }
