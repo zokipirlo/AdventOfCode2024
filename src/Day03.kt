@@ -8,6 +8,7 @@ private sealed interface Command {
 
 fun main() {
     fun findMatches(input: String): Sequence<Command> {
+        // test with https://rubular.com/
         val regex = Regex(pattern = "(mul\\(([0-9]{1,3}),([0-9]{1,3})\\)|(do)\\(\\)|(don't)\\(\\))")
         return regex.findAll(input).mapNotNull { match ->
             val (fullCommand, mula, mulb, isDo, isDont) = match.destructured
