@@ -51,7 +51,6 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        // 101629183 too high
         return input.sumOf(::calculate2)
     }
 
