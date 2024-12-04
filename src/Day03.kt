@@ -1,6 +1,6 @@
 private sealed interface Command {
     data class Mul(val a: Int, val b: Int): Command {
-        val result = a * b
+        fun result() = a * b
     }
     data object Do : Command
     data object Dont : Command
@@ -22,7 +22,7 @@ fun main() {
     }
 
     fun calculate(line: String): Int {
-        return findMatches(line).filterIsInstance<Command.Mul>().sumOf { it.result }
+        return findMatches(line).filterIsInstance<Command.Mul>().sumOf { it.result() }
     }
 
     fun part1(input: List<String>): Int {
@@ -43,7 +43,7 @@ fun main() {
                     0
                 }
                 is Command.Mul -> when {
-                    isDo -> command.result
+                    isDo -> command.result()
                     else -> 0
                 }
             }
