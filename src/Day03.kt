@@ -1,12 +1,15 @@
 private sealed interface Command {
-    data class Mul(val a: Int, val b: Int): Command {
+    data class Mul(val a: Int, val b: Int) : Command {
         fun result() = a * b
     }
+
     data object Do : Command
     data object Dont : Command
 }
 
 fun main() {
+    fun multiply(command: Command.Mul) = command.result()
+
     fun findMatches(input: String): Sequence<Command> {
         // test with https://rubular.com/
         val regex = Regex(pattern = "(mul\\(([0-9]{1,3}),([0-9]{1,3})\\)|(do)\\(\\)|(don't)\\(\\))")
@@ -24,22 +27,40 @@ fun main() {
     fun part1(input: String): Int {
         return findMatches(input)
             .filterIsInstance<Command.Mul>()
-            .sumOf { it.result() }
+            .sumOf(::multiply)
     }
 
     fun part2(input: String): Int {
         val commands = findMatches(input)
         var isDo = true
+//        commands.filter { command ->
+//            when (command) {
+//                Command.Do -> {
+//                    isDo = true
+//                    false
+//                }
+//
+//                Command.Dont -> {
+//                    isDo = false
+//                    false
+//                }
+//
+//                is Command.Mul if isDo -> true
+//                is Command.Mul -> false
+//            }
+//        }.filterIsInstance<Command.Mul>().sumOf(::multiply)
         return commands.sumOf { command ->
             when (command) {
                 Command.Do -> {
                     isDo = true
                     0
                 }
+
                 Command.Dont -> {
-                    isDo =  false
+                    isDo = false
                     0
                 }
+
                 is Command.Mul if isDo -> command.result()
                 is Command.Mul -> 0
             }
