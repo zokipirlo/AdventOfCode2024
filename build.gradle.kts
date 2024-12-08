@@ -14,6 +14,10 @@ kotlin {
     }
 }
 
+dependencies {
+    implementation("com.github.shiguruikai:combinatoricskt:1.6.0")
+}
+
 tasks {
     wrapper {
         gradleVersion = "8.11.1"
