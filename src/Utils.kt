@@ -63,3 +63,28 @@ infix fun Int.isDivisibleBy(divider: Int): Boolean = this % divider == 0
 fun Iterable<Long>.product(): Long = reduce(Long::times)
 
 fun Iterable<Int>.allZeros(): Boolean = all { it == 0 }
+
+class Map2d(val data: Array<CharArray>) {
+    constructor(input: List<String>) : this(input.map { it.toCharArray() }.toTypedArray())
+
+    val ySize = data.size
+    val xSize = data[0].size
+
+    fun forEachIndexed(block: (y: Int, x: Int, item: Char) -> Unit) {
+        for (y in 0..<ySize) {
+            for (x in 0..<xSize) {
+                block(y, x, data[y][x])
+            }
+        }
+    }
+
+    fun forEach(block: (item: Char) -> Unit) {
+        for (y in 0..<ySize) {
+            for (x in 0..<xSize) {
+                block(data[y][x])
+            }
+        }
+    }
+
+    fun isValidCoordinate(x: Int, y: Int) = x in 0..<xSize && y in 0..<ySize
+}
