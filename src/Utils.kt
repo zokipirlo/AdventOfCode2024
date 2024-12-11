@@ -64,6 +64,51 @@ fun Iterable<Long>.product(): Long = reduce(Long::times)
 
 fun Iterable<Int>.allZeros(): Boolean = all { it == 0 }
 
+data class MapItem<T>(val x: Int, val y: Int, val item: T)
+
+class MapInt2d(val data: Array<IntArray>) {
+    constructor(input: List<String>) : this(input.map { it.toCharArray().map(Char::digitToInt).toIntArray() }
+        .toTypedArray())
+
+    val ySize = data.size
+    val xSize = data[0].size
+
+    fun forEachIndexed(block: (y: Int, x: Int, item: Int) -> Unit) {
+        for (y in 0..<ySize) {
+            for (x in 0..<xSize) {
+                block(y, x, data[y][x])
+            }
+        }
+    }
+
+    fun forEach(block: (item: Int) -> Unit) {
+        for (y in 0..<ySize) {
+            for (x in 0..<xSize) {
+                block(data[y][x])
+            }
+        }
+    }
+
+    fun isValidCoordinate(x: Int, y: Int) = x in 0..<xSize && y in 0..<ySize
+
+    fun elementUp(x: Int, y: Int) = when (y <= 0) {
+        true -> null
+        else -> MapItem(x, y -1, data[y - 1][x])
+    }
+    fun elementDown(x: Int, y: Int) = when (y >= ySize - 1) {
+        true -> null
+        else -> MapItem(x, y + 1, data[y + 1][x])
+    }
+    fun elementLeft(x: Int, y: Int) = when (x <= 0) {
+        true -> null
+        else -> MapItem(x - 1, y, data[y][x - 1])
+    }
+    fun elementRight(x: Int, y: Int) = when (x >= xSize -1) {
+        true -> null
+        else -> MapItem(x + 1, y, data[y][x + 1])
+    }
+}
+
 class Map2d(val data: Array<CharArray>) {
     constructor(input: List<String>) : this(input.map { it.toCharArray() }.toTypedArray())
 
