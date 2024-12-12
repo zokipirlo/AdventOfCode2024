@@ -1,4 +1,10 @@
 import com.github.shiguruikai.combinatoricskt.permutationsWithRepetition
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
+import kotlin.time.measureTime
 
 private const val DAY = "Day07"
 
@@ -7,7 +13,7 @@ private class Equation(
     val result: Long,
     val numbers: List<Long>,
 ) {
-    fun trySolve(operators: List<Char>): Boolean {
+    fun trySolve(operators: List<Char>): Long? {
         val valid = operators.permutationsWithRepetition(numbers.size - 1).find { combination ->
             val calculate = numbers.reduceIndexed { index, tempResult, num ->
                 if (tempResult > result) {
@@ -24,7 +30,7 @@ private class Equation(
 //            println("$combination -> $calculate | $result")
             calculate == result
         } != null
-        return valid
+        return if (valid) result else null
     }
 
     companion object {
@@ -42,18 +48,24 @@ fun main() {
     class Equations(input: List<String>) {
         private val equations = input.map(Equation::parse)
 
-        fun getResult(operators: List<Char>): Long = equations
-            .filter { value -> value.trySolve(operators) }
-            .sumOf { value -> value.result }
+        suspend fun getResult(operators: List<Char>): Long = coroutineScope {
+            equations
+                .map { value -> async { value.trySolve(operators) } }
+                .sumOf { deferred -> deferred.await() ?: 0L }
+        }
     }
 
     fun part1(input: List<String>): Long {
-        return Equations(input).getResult(listOf('+', '*'))
+        return runBlocking(Dispatchers.Default) {
+            Equations(input).getResult(listOf('+', '*'))
+        }
     }
 
 
     fun part2(input: List<String>): Long {
-        return Equations(input).getResult(listOf('+', '*', '|'))
+        return runBlocking(Dispatchers.Default) {
+            Equations(input).getResult(listOf('+', '*', '|'))
+        }
     }
 
     val testInput = readInput("${DAY}_test")
@@ -61,6 +73,10 @@ fun main() {
     check(part2(testInput) == 11387L)
 
     val input = readInput(DAY)
-    part1(input).println()
-    part2(input).println()
+    measureTime {
+        part1(input).println()
+    }.println()
+    measureTime {
+        part2(input).println()
+    }.println()
 }
