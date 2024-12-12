@@ -1,9 +1,10 @@
-import Direction.DOWN
-import Direction.LEFT
-import Direction.RIGHT
-import Direction.UP
+import Direction.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.awt.Point
-import kotlin.lazy
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.measureTime
 
 private const val DAY = "Day06"
 
@@ -75,9 +76,11 @@ fun main() {
                     data[tryMove.y][tryMove.x] == '#' -> {
                         guardPosition = guardPosition.changeDirection()
                     }
+
                     visited.contains(tryMove) -> {
                         return null
                     }
+
                     else -> {
                         visited.add(tryMove)
                         return tryMove
@@ -111,17 +114,21 @@ fun main() {
 
 
     fun part2(input: List<String>): Int {
-        var loops = 0
-        input.forEachIndexed { y, line ->
-            line.forEachIndexed { x, item ->
-                val map = runCatching { LabMap(input, x, y) }.getOrNull()
-                val hasLoop = map?.findLoop() == true
-                if (hasLoop) {
-                    loops++
+        var loops = AtomicInteger(0)
+        runBlocking(Dispatchers.Default) {
+            input.forEachIndexed { y, line ->
+                line.forEachIndexed { x, item ->
+                    launch {
+                        val map = runCatching { LabMap(input, x, y) }.getOrNull()
+                        val hasLoop = map?.findLoop() == true
+                        if (hasLoop) {
+                            loops.incrementAndGet()
+                        }
+                    }
                 }
             }
         }
-        return loops
+        return loops.get()
     }
 
     val testInput = readInput("${DAY}_test")
@@ -130,5 +137,7 @@ fun main() {
 
     val input = readInput(DAY)
     part1(input).println()
-    part2(input).println()
+    measureTime {
+        part2(input).println()
+    }.println()
 }
