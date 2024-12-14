@@ -1,13 +1,20 @@
 package utils
 
-class MapInt2d(val data: Array<IntArray>) {
-    constructor(input: List<String>) : this(input.map { it.toCharArray().map(Char::digitToInt).toIntArray() }
-        .toTypedArray())
+data class MapItem<T>(val x: Int, val y: Int, val item: T)
+
+sealed class Map2d<T>(val data: Array<Array<T>>) {
+    class CharMap2d(input: List<String>) : Map2d<Char>(
+        input.map { it.toCharArray().toTypedArray() }.toTypedArray()
+    )
+
+    class IntMap2d(input: List<String>) : Map2d<Int>(
+        input.map { it.toCharArray().map { it.digitToInt() }.toTypedArray() }.toTypedArray()
+    )
 
     val ySize = data.size
     val xSize = data[0].size
 
-    fun forEachIndexed(block: (y: Int, x: Int, item: Int) -> Unit) {
+    fun forEachIndexed(block: (y: Int, x: Int, item: T) -> Unit) {
         for (y in 0..<ySize) {
             for (x in 0..<xSize) {
                 block(y, x, data[y][x])
@@ -15,7 +22,18 @@ class MapInt2d(val data: Array<IntArray>) {
         }
     }
 
-    fun forEach(block: (item: Int) -> Unit) {
+
+    inline fun <R> mapIndexed(transform: (y: Int, x: Int, item: T) -> R): List<R> {
+        val items = mutableListOf<R>()
+        for (y in 0..<ySize) {
+            for (x in 0..<xSize) {
+                items.add(transform(y, x, data[y][x]))
+            }
+        }
+        return items
+    }
+
+    fun forEach(block: (item: T) -> Unit) {
         for (y in 0..<ySize) {
             for (x in 0..<xSize) {
                 block(data[y][x])

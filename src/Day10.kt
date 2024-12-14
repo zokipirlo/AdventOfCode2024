@@ -1,11 +1,11 @@
-import utils.MapInt2d
+import utils.Map2d
 import utils.MapItem
 import utils.println
 import utils.readInput
 
 private const val DAY = "Day10"
 
-private class Trail(private val map: MapInt2d, private val start: MapItem<Int>) {
+private class Trail(private val map: Map2d.IntMap2d, private val start: MapItem<Int>) {
 
     private val uniquePaths = mutableSetOf<MapItem<Int>>()
     private val ratings = mutableMapOf<MapItem<Int>, Int>()
@@ -43,7 +43,7 @@ private class Trail(private val map: MapInt2d, private val start: MapItem<Int>) 
 }
 
 private class LavaIsland(input: List<String>) {
-    private val map = MapInt2d(input)
+    private val map = Map2d.IntMap2d(input)
 
     fun getStartPoints(): List<MapItem<Int>> {
         val startPoints = mutableListOf<MapItem<Int>>()

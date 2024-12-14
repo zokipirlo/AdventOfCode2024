@@ -1,5 +1,5 @@
 import com.github.shiguruikai.combinatoricskt.combinations
-import utils.MapChar2d
+import utils.Map2d
 import utils.println
 import utils.readInput
 import kotlin.time.measureTime
@@ -19,7 +19,7 @@ private data class Antidote(
 
 fun main() {
     class AntennaMap(input: List<String>) {
-        val data = MapChar2d(input)
+        val data = Map2d.CharMap2d(input)
         val antennas = mutableListOf<Antenna>()
 
         init {
