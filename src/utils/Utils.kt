@@ -1,17 +1,23 @@
+package utils
+
 import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.io.path.Path
 import kotlin.io.path.readText
 import kotlin.math.absoluteValue
+import kotlin.math.floor
+import kotlin.math.log10
+import kotlin.math.pow
 
 /**
  * Reads lines from the given input txt file.
  */
 fun readInput(name: String) = Path("src/$name.txt").readText().trim().lines()
 fun readInputAsString(name: String) = Path("src/$name.txt").readText().trim()
+fun readStringAsLines(input: String) = input.trim().lines()
 
 /**
- * Converts string to md5 hash.
+ * Converts string to utils.md5 hash.
  */
 fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteArray()))
     .toString(16)
@@ -45,7 +51,7 @@ fun gcd(a: BigInteger, b: BigInteger): BigInteger = if (b == BigInteger.ZERO) a.
 
 
 /**
- * Find the least common multiple of a and b using the gcd of a and b.
+ * Find the least common multiple of a and b using the utils.gcd of a and b.
  */
 fun lcm(a: Long, b: Long): Long = (a * b) / gcd(a, b)
 fun lcm(a: BigInteger, b: BigInteger): BigInteger = (a * b) / gcd(a, b)
@@ -64,72 +70,25 @@ fun Iterable<Long>.product(): Long = reduce(Long::times)
 
 fun Iterable<Int>.allZeros(): Boolean = all { it == 0 }
 
-data class MapItem<T>(val x: Int, val y: Int, val item: T)
-
-class MapInt2d(val data: Array<IntArray>) {
-    constructor(input: List<String>) : this(input.map { it.toCharArray().map(Char::digitToInt).toIntArray() }
-        .toTypedArray())
-
-    val ySize = data.size
-    val xSize = data[0].size
-
-    fun forEachIndexed(block: (y: Int, x: Int, item: Int) -> Unit) {
-        for (y in 0..<ySize) {
-            for (x in 0..<xSize) {
-                block(y, x, data[y][x])
-            }
-        }
+fun Double.concat(other: Double): Double {
+    val digits = when {
+        other > 1 -> floor(log10(other)).toInt() + 1
+        else -> 1
     }
-
-    fun forEach(block: (item: Int) -> Unit) {
-        for (y in 0..<ySize) {
-            for (x in 0..<xSize) {
-                block(data[y][x])
-            }
-        }
-    }
-
-    fun isValidCoordinate(x: Int, y: Int) = x in 0..<xSize && y in 0..<ySize
-
-    fun elementUp(x: Int, y: Int) = when (y <= 0) {
-        true -> null
-        else -> MapItem(x, y -1, data[y - 1][x])
-    }
-    fun elementDown(x: Int, y: Int) = when (y >= ySize - 1) {
-        true -> null
-        else -> MapItem(x, y + 1, data[y + 1][x])
-    }
-    fun elementLeft(x: Int, y: Int) = when (x <= 0) {
-        true -> null
-        else -> MapItem(x - 1, y, data[y][x - 1])
-    }
-    fun elementRight(x: Int, y: Int) = when (x >= xSize -1) {
-        true -> null
-        else -> MapItem(x + 1, y, data[y][x + 1])
-    }
+    return this * 10.0.pow(digits) + other
 }
 
-class Map2d(val data: Array<CharArray>) {
-    constructor(input: List<String>) : this(input.map { it.toCharArray() }.toTypedArray())
+fun Long.concat(other: Long): Long {
+    if (other < 10) return this * 10 + other
 
-    val ySize = data.size
-    val xSize = data[0].size
+    var thisShifted = this * 10
+    var otherRemain = other / 10
 
-    fun forEachIndexed(block: (y: Int, x: Int, item: Char) -> Unit) {
-        for (y in 0..<ySize) {
-            for (x in 0..<xSize) {
-                block(y, x, data[y][x])
-            }
-        }
+    while (otherRemain > 0) {
+        thisShifted *= 10
+        otherRemain /= 10
     }
 
-    fun forEach(block: (item: Char) -> Unit) {
-        for (y in 0..<ySize) {
-            for (x in 0..<xSize) {
-                block(data[y][x])
-            }
-        }
-    }
-
-    fun isValidCoordinate(x: Int, y: Int) = x in 0..<xSize && y in 0..<ySize
+    return thisShifted + other
 }
+

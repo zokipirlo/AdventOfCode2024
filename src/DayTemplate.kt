@@ -1,3 +1,6 @@
+import utils.println
+import utils.readInput
+
 private const val DAY = "Day__"
 
 fun main() {

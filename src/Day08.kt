@@ -1,4 +1,8 @@
 import com.github.shiguruikai.combinatoricskt.combinations
+import utils.MapChar2d
+import utils.println
+import utils.readInput
+import kotlin.time.measureTime
 
 private const val DAY = "Day08"
 
@@ -15,7 +19,7 @@ private data class Antidote(
 
 fun main() {
     class AntennaMap(input: List<String>) {
-        val data = Map2d(input)
+        val data = MapChar2d(input)
         val antennas = mutableListOf<Antenna>()
 
         init {
@@ -99,7 +103,7 @@ fun main() {
 
         fun countAntidotes(onlyFirst: Boolean): Int {
             val dotes = mapAntidotes(onlyFirst)
-//            dotes.sortedBy { it.y }.forEach(::println)
+//            dotes.sortedBy { it.y }.forEach(::utils.println)
             return dotes.size
         }
     }
@@ -119,5 +123,7 @@ fun main() {
 
     val input = readInput(DAY)
     part1(input).println()
-    part2(input).println()
+    measureTime {
+        part2(input).println()
+    }.println()
 }

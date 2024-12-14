@@ -1,3 +1,6 @@
+import utils.println
+import utils.readInputAsString
+
 private const val DAY = "Day09"
 
 private class DiskMap(input: String) {
@@ -99,13 +102,13 @@ fun main() {
 
     fun part2(input: String): Long {
         val diskMap = DiskMap(input)
-//        println(diskMap.blocks)
+//        utils.println(diskMap.blocks)
         diskMap.moveFiles()
-//        println(diskMap.blocks)
+//        utils.println(diskMap.blocks)
         return diskMap.calculate()
     }
 
-//    val testInput = readInput("${DAY}_test")
+//    val testInput = utils.readInput("${DAY}_test")
     val testInput = "2333133121414131402"
     check(part1(testInput) == 1928L)
     check(part2(testInput) == 2858L)

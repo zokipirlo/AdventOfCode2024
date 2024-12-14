@@ -2,6 +2,8 @@ import Direction.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import utils.println
+import utils.readInput
 import java.awt.Point
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.measureTime
@@ -90,11 +92,11 @@ fun main() {
         }
 
         fun findExit(): Int {
-//            println("$steps. Guard move: $guardPosition")
+//            utils.println("$steps. Guard move: $guardPosition")
             while (guardPosition.isInside()) {
                 guardPosition = getNextPosition() ?: return -1 // loop
                 steps++
-//                println("$steps. Guard move: $guardPosition")
+//                utils.println("$steps. Guard move: $guardPosition")
             }
             return visited.distinctBy { position -> position.point }.size
         }

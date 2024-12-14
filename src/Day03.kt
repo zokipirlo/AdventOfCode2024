@@ -1,3 +1,6 @@
+import utils.println
+import utils.readInputAsString
+
 private sealed interface Command {
     data class Mul(val a: Int, val b: Int) : Command {
         fun result() = a * b
@@ -48,7 +51,7 @@ fun main() {
 //                is Command.Mul if isDo -> true
 //                is Command.Mul -> false
 //            }
-//        }.filterIsInstance<Command.Mul>().sumOf(::multiply)
+//        }.filterIsInstance<Command.Mul>().sumOf(::utils.multiply)
         return commands.sumOf { command ->
             when (command) {
                 Command.Do -> {

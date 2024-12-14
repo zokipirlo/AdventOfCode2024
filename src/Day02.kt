@@ -1,3 +1,5 @@
+import utils.println
+import utils.readInput
 import kotlin.math.absoluteValue
 
 fun main() {
@@ -34,28 +36,28 @@ fun main() {
     fun removeListItem(index: Int, list: List<Int>): List<Int> = list.toMutableList().apply { removeAt(index) }
 
     fun isSafe2(line: String): Boolean {
-//        println()
+//        utils.println()
 
         val numbers = line.split(" ").map { it.toInt() }
         val index = checkReports(numbers)
         if (index == 0) {
-//            println("Safe in: $numbers")
+//            utils.println("Safe in: $numbers")
             return true
         }
 
 //        val part1 = removeListItem(index, numbers)
-//        println("Checking part1: $part1")
+//        utils.println("Checking part1: $part1")
 //        if (checkReports(part1) == 0) {
-//            println("Safe in: $part1")
+//            utils.println("Safe in: $part1")
 //            return true
 //        }
 //        val part2 = removeListItem(index - 1, numbers)
-//        println("Checking part2: $part2")
+//        utils.println("Checking part2: $part2")
 //        if (checkReports(part2) == 0) {
-//            println("Safe in: $part2")
+//            utils.println("Safe in: $part2")
 //            return true
 //        }
-//        println("Unsafe in: $numbers")
+//        utils.println("Unsafe in: $numbers")
 //        return false
         return checkReports(removeListItem(index, numbers)) == 0 ||
                 checkReports(removeListItem(index - 1, numbers)) == 0 ||

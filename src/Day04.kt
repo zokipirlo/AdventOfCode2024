@@ -1,3 +1,6 @@
+import utils.println
+import utils.readInput
+
 private typealias Letters = Array<CharArray>
 
 fun main() {
@@ -57,7 +60,7 @@ fun main() {
                 val w2 = buildVertical(letters, x, y)
                 val w3 = buildDiagonalRight(letters, x, y)
                 val w4 = buildDiagonalLeft(letters, x, y)
-//                println("Words($x, $y): $w1 $w2 $w3 $w4")
+//                utils.println("Words($x, $y): $w1 $w2 $w3 $w4")
                 if (checkXmas(w1)) {
                     result++
                 }
@@ -72,7 +75,7 @@ fun main() {
                 }
             }
         }
-//        println("Result $result")
+//        utils.println("Result $result")
         return result
     }
 
@@ -101,13 +104,13 @@ fun main() {
         for (y in 0..lastIndex) {
             for (x in 0..lastIndex) {
                 val xmas = buildXmas(letters, x, y)
-//                println("Words($x, $y): $xmas")
+//                utils.println("Words($x, $y): $xmas")
                 if (xmas != null && checkMas(xmas.first) && checkMas(xmas.second)) {
                     result++
                 }
             }
         }
-//        println("Result $result")
+//        utils.println("Result $result")
         return result
     }
 

@@ -1,3 +1,6 @@
+import utils.println
+import utils.readInput
+
 private const val DAY = "Day05"
 
 fun main() {
@@ -51,13 +54,13 @@ fun main() {
 
             val errorBefore = beforeNums.find { before -> rules.after.contains(before) }
             if (errorBefore != null) {
-//            println("error rule $num|$errorBefore")
+//            utils.println("error rule $num|$errorBefore")
                 return instruction.indexOf(errorBefore)
             }
 
             val errorAfter = afterNums.find { after -> rules.before.contains(after) }
             if (errorAfter != null) {
-//            println("error rule errorAfter|$num")
+//            utils.println("error rule errorAfter|$num")
                 return instruction.indexOf(errorAfter)
             }
 

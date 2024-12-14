@@ -1,61 +1,74 @@
+import utils.MapInt2d
+import utils.MapItem
+import utils.println
+import utils.readInput
+
 private const val DAY = "Day10"
 
-private data class MapPath(
-    val start: MapItem<Int>,
-    val end: MapItem<Int>,
-)
+private class Trail(private val map: MapInt2d, private val start: MapItem<Int>) {
 
-private class LavaIsland(input: List<String>) {
-    private val map = MapInt2d(input)
-    private val ratings = mutableMapOf<MapPath, Int>()
-    private val uniquePaths = mutableSetOf<MapPath>()
+    private val uniquePaths = mutableSetOf<MapItem<Int>>()
+    private val ratings = mutableMapOf<MapItem<Int>, Int>()
 
-    fun moveFrom(num: Int, x: Int, y: Int, path: List<MapItem<Int>>) {
-        if (num == 9) {
-            val uniquePath = MapPath(path.first(), path.last())
-            uniquePaths.add(uniquePath)
-            ratings[uniquePath] = ratings.getOrDefault(uniquePath, 0) + 1
-//            println("Found path: $path")
+    private fun findAllTrails(path: List<MapItem<Int>>) {
+        val lastItem = path.last()
+        if (lastItem.item == 9) {
+            uniquePaths.add(lastItem)
+            ratings[lastItem] = ratings.getOrDefault(lastItem, 0) + 1
             return
         }
 
-        val nextItem = num + 1
+        val nextItem = lastItem.item + 1
         val candidates = listOfNotNull(
-            map.elementUp(x, y),
-            map.elementRight(x, y),
-            map.elementDown(x, y),
-            map.elementLeft(x, y)
+            map.elementUp(lastItem),
+            map.elementRight(lastItem),
+            map.elementDown(lastItem),
+            map.elementLeft(lastItem)
         ).filter { it.item == nextItem }
 
         candidates.forEach { candidate ->
-            moveFrom(candidate.item, candidate.x, candidate.y, path.toMutableList().also { it.add(candidate) })
+            findAllTrails(path.toMutableList().also { it.add(candidate) })
         }
     }
 
-    fun mapTrails() {
+    fun getUniquePaths(): Int {
+        findAllTrails(listOf(start))
+        return uniquePaths.size
+    }
+
+    fun getRatings(): Int {
+        findAllTrails(listOf(start))
+        return ratings.values.sum()
+    }
+}
+
+private class LavaIsland(input: List<String>) {
+    private val map = MapInt2d(input)
+
+    fun getStartPoints(): List<MapItem<Int>> {
+        val startPoints = mutableListOf<MapItem<Int>>()
         map.forEachIndexed { y, x, item ->
             if (item == 0) {
-                moveFrom(0, x, y, listOf(MapItem(x, y, 0)))
+                startPoints.add(MapItem(x, y, 0))
             }
         }
+        return startPoints
     }
 
-    fun getUniquePaths() = uniquePaths.size
-    fun getRatings() = ratings.values
+    fun getUniquePaths() = getStartPoints().sumOf { Trail(map, it).getUniquePaths() }
+    fun getRatings() = getStartPoints().sumOf { Trail(map, it).getRatings() }
 }
 
 fun main() {
     fun part1(input: List<String>): Int {
         val island = LavaIsland(input)
-        island.mapTrails()
         return island.getUniquePaths()
     }
 
 
     fun part2(input: List<String>): Int {
         val island = LavaIsland(input)
-        island.mapTrails()
-        return island.getRatings().sum()
+        return island.getRatings()
     }
 
     val testInput = readInput("${DAY}_test")

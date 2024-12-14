@@ -16,6 +16,7 @@ kotlin {
 
 dependencies {
     implementation("com.github.shiguruikai:combinatoricskt:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
 }
 
 tasks {

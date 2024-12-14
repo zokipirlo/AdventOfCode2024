@@ -1,9 +1,11 @@
 import com.github.shiguruikai.combinatoricskt.permutationsWithRepetition
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
+import utils.concat
+import utils.println
+import utils.readInput
 import kotlin.time.measureTime
 
 private const val DAY = "Day07"
@@ -17,17 +19,17 @@ private class Equation(
         val valid = operators.permutationsWithRepetition(numbers.size - 1).find { combination ->
             val calculate = numbers.reduceIndexed { index, tempResult, num ->
                 if (tempResult > result) {
-//                    println("too much $index, $tempResult, $num")
+//                    utils.println("too much $index, $tempResult, $num")
                     return@reduceIndexed tempResult
                 }
                 when (combination[index - 1]) {
                     '+' -> tempResult + num
                     '*' -> tempResult * num
-                    '|' -> "${tempResult}${num}".toLong()
+                    '|' -> tempResult.concat(num)
                     else -> throw UnsupportedOperationException("Unsupported operation ${combination[index - 1]}")
                 }
             }
-//            println("$combination -> $calculate | $result")
+//            utils.println("$combination -> $calculate | $result")
             calculate == result
         } != null
         return if (valid) result else null
