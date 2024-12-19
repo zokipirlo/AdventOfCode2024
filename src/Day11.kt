@@ -4,46 +4,45 @@ import utils.readInputAsString
 private const val DAY = "Day11"
 
 fun main() {
-    fun blinkOnce(stones: List<Long>) = buildList {
-        stones.forEach { stone ->
-            when {
-                stone == 0L -> add(1L)
-                stone.toString().length % 2 == 0 -> {
-                    val stoneString = stone.toString()
-                    val (left, right) = stoneString.chunked(stoneString.length / 2)
-                    add(left.toLong())
-                    add(right.toLong())
-                }
+    class StoneList(input: String) {
+        val stones = input.split(" ").map { it.toLong() }
 
-                else -> {
-                    val newValue = stone * 2024
-                    add(newValue)
+        private fun blinkOnce(stonesCount: Map<Long, Long>) = buildMap<Long, Long>{
+            stonesCount.forEach { (stone, count) ->
+                when {
+                    stone == 0L -> merge(1L, count, Long::plus)
+                    stone.toString().length % 2 == 0 -> {
+                        val stoneString = stone.toString()
+                        val (left, right) = stoneString.chunked(stoneString.length / 2)
+
+                        merge(left.toLong(), count, Long::plus)
+                        merge(right.toLong(), count, Long::plus)
+                    }
+
+                    else -> {
+                        val newValue = stone * 2024
+                        merge(newValue, count, Long::plus)
+                    }
                 }
             }
         }
-    }
 
-    fun blink(total: Int, initialStones: List<Long>): Long {
-        var stones = listOf(initialStones)
-        repeat(total) {
-            println("Repeat $it")
-            stones = stones.flatMap { stoneItem ->
-                val newStoneItems = blinkOnce(stoneItem)
-                newStoneItems.chunked(1000)
+        fun blinkAll(repeats: Int): Long {
+            var stoneIteration: Map<Long, Long> = stones.groupingBy { it }.fold(0) { acc, e -> acc + 1 }
+            repeat(repeats) {
+                stoneIteration = blinkOnce(stoneIteration)
             }
+            return stoneIteration.values.sum()
         }
-        return stones.sumOf { it.size.toLong() }
     }
 
     fun part1(input: String): Long {
-        var stones = input.split(" ").map { it.toLong() }
-        return blink(25, stones)
+        return StoneList(input).blinkAll(25)
     }
 
 
     fun part2(input: String): Long {
-        var stones = input.split(" ").map { it.toLong() }
-        return blink(75, stones)
+        return StoneList(input).blinkAll(75)
     }
 
     val testInput = readInputAsString("${DAY}_test")
