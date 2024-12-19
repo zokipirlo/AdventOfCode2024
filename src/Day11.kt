@@ -7,10 +7,10 @@ fun main() {
     class StoneList(input: String) {
         val stones = input.split(" ").map { it.toLong() }
 
-        private fun blinkOnce(stonesCount: Map<Long, Long>) = buildMap<Long, Long>{
+        private fun blinkOnce(stonesCount: Map<Long, Long>) = buildMap<Long, Long> {
             stonesCount.forEach { (stone, count) ->
                 when {
-                    stone == 0L -> merge(1L, count, Long::plus)
+                    stone == 0L -> merge(1L, count, Long::plus) // put new value or uses plus operation with old value
                     stone.toString().length % 2 == 0 -> {
                         val stoneString = stone.toString()
                         val (left, right) = stoneString.chunked(stoneString.length / 2)
@@ -28,7 +28,10 @@ fun main() {
         }
 
         fun blinkAll(repeats: Int): Long {
-            var stoneIteration: Map<Long, Long> = stones.groupingBy { it }.fold(0) { acc, e -> acc + 1 }
+            var stoneIteration: Map<Long, Long> = stones
+                .groupingBy { it }
+                .fold(0) { acc, e -> acc + 1 } // eachCount gives int, we need long
+            
             repeat(repeats) {
                 stoneIteration = blinkOnce(stoneIteration)
             }
