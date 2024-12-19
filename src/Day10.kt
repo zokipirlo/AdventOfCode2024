@@ -10,34 +10,32 @@ private class Trail(private val map: Map2d.IntMap2d, private val start: MapItem<
     private val uniquePaths = mutableSetOf<MapItem<Int>>()
     private val ratings = mutableMapOf<MapItem<Int>, Int>()
 
-    private fun findAllTrails(path: List<MapItem<Int>>) {
-        val lastItem = path.last()
-        if (lastItem.item == 9) {
-            uniquePaths.add(lastItem)
-            ratings[lastItem] = ratings.getOrDefault(lastItem, 0) + 1
-            return
-        }
+    private fun findAllTrails(path: MutableList<MapItem<Int>>) {
+        map.buildPath(path) {
+            val lastItem = path.last()
+            if (lastItem.item == 9) {
+                uniquePaths.add(lastItem)
+                ratings[lastItem] = ratings.getOrDefault(lastItem, 0) + 1
+                return@buildPath emptyList()
+            }
 
-        val nextItem = lastItem.item + 1
-        val candidates = listOfNotNull(
-            map.elementUp(lastItem),
-            map.elementRight(lastItem),
-            map.elementDown(lastItem),
-            map.elementLeft(lastItem)
-        ).filter { it.item == nextItem }
-
-        candidates.forEach { candidate ->
-            findAllTrails(path.toMutableList().also { it.add(candidate) })
+            val nextItem = lastItem.item + 1
+            listOfNotNull(
+                map.elementUp(lastItem),
+                map.elementRight(lastItem),
+                map.elementDown(lastItem),
+                map.elementLeft(lastItem)
+            ).filter { it.item == nextItem }
         }
     }
 
     fun getUniquePaths(): Int {
-        findAllTrails(listOf(start))
+        findAllTrails(mutableListOf(start))
         return uniquePaths.size
     }
 
     fun getRatings(): Int {
-        findAllTrails(listOf(start))
+        findAllTrails(mutableListOf(start))
         return ratings.values.sum()
     }
 }
